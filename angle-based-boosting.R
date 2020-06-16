@@ -104,6 +104,8 @@ learner.m=function(xlearn, ylearn, xtest, wgt=NULL, mat=NULL, level=2) {
 }
 
 
+
+################################### MultiBoost developed by Wang (2013) #####################################
 adaboost.my <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 200) {
     ## Initialization
     n=nrow(x.train)
@@ -522,9 +524,8 @@ adaboost.mgCS <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 
 
 
 
-###################################################################################################
-################################## My Angle-based Boosting ########################################
-###################################################################################################
+################################## Angle-based Boostings ########################################
+
 
 
 ## Convert phi(x)(int class label) to g(x)(angle-based vertex)
@@ -545,7 +546,7 @@ max_anglevec.ind=function(x) return(order(-x%*%t(W))[1])
 
 
 
-##################### My angle-based cost-sensitive adaboost classifier############################
+##################### Angle-based cost-sensitive adaboost classifier############################
 
 adaboost.my_CSangle <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 200) {
   ## Initialization
@@ -601,7 +602,7 @@ adaboost.my_CSangle <- function(x.train, y.train, x.test, y.test, cost=NULL, mfi
 }
 
 
-##################### My angle-based cost-sensitive logitboost classifier############################
+##################### Angle-based cost-sensitive logitboost classifier############################
 
 logitboost.my_CSangle <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 200) {
   ## Initialization
