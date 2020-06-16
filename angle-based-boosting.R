@@ -1,3 +1,4 @@
+##test
 ################################### MultiBoost (Wang, 2013) ################################################
 #Wang, J. (2013), “Boosting the Generalized Margin in Cost-Sensitive Multiclass Classification,” 
 #Journal of Computational and Graphical Statistics, 22, 178–192
