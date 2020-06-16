@@ -1,3 +1,9 @@
+################################### MultiBoost (Wang, 2013) ################################################
+#Wang, J. (2013), “Boosting the Generalized Margin in Cost-Sensitive Multiclass Classification,” 
+#Journal of Computational and Graphical Statistics, 22, 178–192
+#############################################################################################################
+
+#####transfer func. and decision trees
 trsf=function(kvec, K) {
     res=matrix(-1/(K-1),length(kvec),K)
     for ( i in 1:length(kvec) ) res[i,kvec[i]]=1
@@ -105,8 +111,8 @@ learner.m=function(xlearn, ylearn, xtest, wgt=NULL, mat=NULL, level=2) {
 
 
 
-################################### MultiBoost developed by Wang (2013) #####################################
-adaboost.my <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 200) {
+##### MultiBoost of Wang, J. (2013)
+adaboost.MultiBoost <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 200) {
     ## Initialization
     n=nrow(x.train)
     p=ncol(x.train)
@@ -158,9 +164,9 @@ adaboost.my <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 20
 
 
 
-#####################################################################################
-################################## Existing methods #################################
-#####################################################################################
+########################################################################################################
+######################## Existing methods of boostings (Wang, 2013) ####################################
+########################################################################################################
 
 learner <- function(xlearn, ylearn, xtest, w) {
     ## Definitions
@@ -281,8 +287,6 @@ adaboost.mg <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 20
     for (m in 1:mfinal) {
     
         ## Fitting the tree
-###        wmat=w*matrix(1,n,K); wmat[cbind(1:n,y.train)]=0
-###        update=learner.m(x.train, y.train, x.test, mat=wmat, level=1)
         update=learner.m(x.train, y.train, x.test, wgt=w, level=1)
         flearn=matrix(0,n,K)
         flearn[cbind(1:n,update$learn)]=1
@@ -422,13 +426,9 @@ adaboost.lp <- function(x.train, y.train, x.test, y.test, pnorm=2, cost=NULL, mf
 
 
 
-
-
-#The following code are developped by YANG Yi
-
-##############################################################################################
-###################Cost-sensitive error extension of existing methods#########################
-##############################################################################################
+###############################################################################################
+#########################Cost-sensitive extension of existing methods##########################
+###############################################################################################
 
 
 adaboost.mhCS <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 200) {
@@ -463,11 +463,11 @@ adaboost.mhCS <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 
   for ( m in 1:mfinal) {
     Flearn.tmp=t(Flearn.array[,,m])
     Ftest.tmp=t(Ftest.array[,,m])
-    err[m,1]=sum(apply(Flearn.tmp,1,max.ind)!=y.train)/n #error rate on the training set
-    err[m,2]=sum(apply(Ftest.tmp,1,max.ind)!=y.test)/n.test #error rate on the test set
+    #err[m,1]=sum(apply(Flearn.tmp,1,max.ind)!=y.train)/n #error rate on the training set
+    #err[m,2]=sum(apply(Ftest.tmp,1,max.ind)!=y.test)/n.test #error rate on the test set
     
-    err_CS[m,1]=sum(c.mat[cbind(y.train,apply(Flearn.tmp,1,max.ind))])/n
-    err_CS[m,2]=sum(c.mat[cbind(y.test,apply(Ftest.tmp,1,max.ind))])/n.test
+    err_CS[m,1]=sum(c.mat[cbind(y.train,apply(Flearn.tmp,1,max.ind))])/n #averaged total misclassification cost on the training set
+    err_CS[m,2]=sum(c.mat[cbind(y.test,apply(Ftest.tmp,1,max.ind))])/n.test #averaged total misclassification cost on the test set
   }
   
   return(list(ytr=apply(Flearn,1,max.ind),yte=apply(Ftest,1,max.ind),error=err_CS))   
@@ -491,8 +491,6 @@ adaboost.mgCS <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 
   for (m in 1:mfinal) {
     
     ## Fitting the tree
-    ###        wmat=w*matrix(1,n,K); wmat[cbind(1:n,y.train)]=0
-    ###        update=learner.m(x.train, y.train, x.test, mat=wmat, level=1)
     update=learner.m(x.train, y.train, x.test, wgt=w, level=1)
     flearn=matrix(0,n,K)
     flearn[cbind(1:n,update$learn)]=1
@@ -522,12 +520,12 @@ adaboost.mgCS <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 
   return(list(ytr=apply(Flearn,1,max.ind),yte=apply(Ftest,1,max.ind),error=err))   
 }
 
+#############################################################################################
+################################### Our Angle-based Boostings ###############################
+#############################################################################################
 
 
-################################## Angle-based Boostings ########################################
-
-
-
+# transfer func.
 ## Convert phi(x)(int class label) to g(x)(angle-based vertex)
 trsf_g=function(kvec, K) {
   #K:the No. of the classes
@@ -546,7 +544,7 @@ max_anglevec.ind=function(x) return(order(-x%*%t(W))[1])
 
 
 
-##################### Angle-based cost-sensitive adaboost classifier############################
+##################### Our angle-based cost-sensitive adaboost ############################
 
 adaboost.my_CSangle <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 200) {
   ## Initialization
@@ -602,7 +600,7 @@ adaboost.my_CSangle <- function(x.train, y.train, x.test, y.test, cost=NULL, mfi
 }
 
 
-##################### Angle-based cost-sensitive logitboost classifier############################
+##################### Our angle-based cost-sensitive logitboost ############################
 
 logitboost.my_CSangle <- function(x.train, y.train, x.test, y.test, cost=NULL, mfinal = 200) {
   ## Initialization
